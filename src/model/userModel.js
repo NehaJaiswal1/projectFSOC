@@ -2,73 +2,41 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    username: { 
-        type: String, 
-        required: true
-     },
-    password: { 
+    firstName: {
         type: String,
-        required: true 
-    },
-
-    firstName: { 
-        type: String , 
-        default:''
+        trim: true,
+        required: [true, 'first name is required'],
+        maxlength: 32,
     },
     lastName: {
-         type: String ,
-          default:''
-    },
-    email: { 
-        type: String , 
-        default:''
-    },
-    mobileNumber: { 
-        type: String ,
-         default:''
-        
-    },
-    portfolio: { 
-        type: String , 
-        default:''
-    },
-
-    about: { 
-        type: String , 
-        default:''
-    },
-    address: {
-         type: String , 
-         default:''
-    },
-    role: {
         type: String,
-        enum:["Admin", "Job-seeker", "employeer"],
-        required: true
+        trim: true,
+        required: [true, 'last name is required'],
+        maxlength: 32,
+    },
+    email: {
+        type: String,
+        trim: true,
+        required: [true, 'e-mail is required'],
+        unique: true,
+        match: [
+            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+            'Please add a valid email'
+        ]
+    },
+    password: {
+        type: String,
+        trim: true,
+        required: [true, 'password is required'],
+        minlength: [6, 'password must have at least (6) caracters'],
     },
 
-    education: { 
-        type: [] , 
-        default: ['']
-     },
-    skills: {
-         type: [] ,
-         default: [''] 
-     },
-    projects: { 
-        type: [] , 
-        default: ['']
-     },
-    experience: { 
-        type: [] , 
-        default: ['']
-     },
+    jobsHistory: [jobsHistorySchema],
 
-    appliedJobs: [],
-  },
-  { timestamps: true }
-);
+    role: {
+        type: Number,
+        default: 0
+    },
+}, { timestamps: true })
 
-const userModal = new mongoose.model("users", userSchema);
-
-module.exports = userModal;
+module.exports = mongoose.model("Users", userSchema);
