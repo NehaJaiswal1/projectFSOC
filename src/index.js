@@ -27,20 +27,3 @@ app.listen(port, () => {
   console.log(`App is running on port ${port}`);
 });
 
-
-// const express = require("express")
-// const route = require("./route/jobroute")
-// const app = express()
-// const mongoose = require("mongoose")
-
-// app.use(express.json())
-
-// mongoose.connect("mongodb+srv://Akshay:akshay7798953554@akshaydb.e6tjw4w.mongodb.net/group14Database")
-//     .then(() => { console.log("mongoDb is connected") })
-//     .catch((err) => { console.log(err.message) })
-
-// app.use('/', route)
-
-// app.listen(3000, function () {
-//     console.log('Express app running on port ' + (3000))
-// });

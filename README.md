@@ -141,11 +141,10 @@ _Request format__
 
 
 {
-   firstName: {String,mandatory},
-  lastName: {String, mandatory},
+  name: {String,mandatory},
   email: {String, mandatory},
   password: {String, mandatory,{bycrypt}},
-  jobsHistory: [jobsHistorySchema],
+  tags: [jobsHistorySchema],
   role: ["admin", "user", "employer"]
 
 
@@ -154,18 +153,20 @@ _Request format__
 
 ## User APIs
 ### POST /register
+
 _Request format__
 ```yaml
 {
-  firstName, lastname, email, password, jobsHistory, role
+  name, 
+  email,
+  password,
+  jobsHistory,
+  role
 
 }
 ```
-- Create a user document from request body. Request body must contain image.
-- Save password in encrypted format. (use bcrypt)
 - __Response format__
-  - _**On success**_ - Return HTTP status 201.
-  - _**On error**_ - Return a suitable error message with a valid HTTP status code.
+  
 ```yaml
 {
     "status": true,
@@ -173,19 +174,18 @@ _Request format__
     "data": {}
 }
 ```
-
-
 ### POST /login
-```yaml
+
 _Request format__
+
+```yaml
 {
-  email, password
+  email, 
+  password
 
 }
-
-- Allow an user to login with their email and password.
-- On a successful login attempt return the userId and a JWT token contatining the userId, exp, iat.
-
+```
+ __Response format__
 ```yaml
 {
     "status": true,
@@ -200,31 +200,35 @@ _Request format__
 
 ## GET /user/:userId (Authentication required)
 _Request format__
+```yaml
 {
   userId
 }
-
+```
 - Allow an user to fetch details of their profile.
 - Make sure that userId in url param and in token is same
 
 
 ### PUT /user/:userId
 _Request format__
+```yaml
 {
   firstName, lastName, email, password
 
 }
-
+```
 - Updates a user data by changing at least one or all fields
 - Check if the userId exists (must have isDeleted false and is present in collection). If it doesn't, return an HTTP status 404
 
 
 ### DELETE /user/:userId
 _Request format__
+```yaml
 {
   userId
 
 }
+```
 - Deletes a user by user id if it's not already deleted
 - __Response format__
   - _**On success**_ - Return HTTP status 200.
@@ -255,18 +259,24 @@ user: {ObjectId}
 
 
 ## Job APIs
-### POST /job/
+### POST API - /job/create
 
 - Create a job
 
 _Request format__
 {
-  title,description,salary,location,available,jobType,userId
+  title,
+  description,
+  salary,
+  location,
+  available,
+  jobType,
+  userId
 
 }
 
 - __Response format__
-  ```yaml
+```yaml
 {
 title: "software developer",
 description: "a full stack developer with the required data flow",
@@ -279,11 +289,7 @@ user: {ObjectId}
 
 }
 ```
-
-
-
-
-### GET /job/:jobId/job
+### GET API - /job/:jobId
 
 _Request format__
 {
@@ -292,48 +298,30 @@ _Request format__
 }
 
 
-- Returns Applied candidates
+### PUT API - /job/update/:jobId
 
-
-### PUT /job/:jobId
 - Updates a job data by changing at least one or all fields
-- Check if the jobId exists (must have isDeleted false and is present in collection). If it doesn't, return an HTTP status 404 with a response body like [this](#error-response-structure)
-
+- Check if the jobId exists (must have isDeleted false and is present in collection). If it doesn't, return an HTTP status 404
 _Request format__
 {
-  title,description,salary,location,available,jobType,userId
+  title,
+  description,
+  salary,
+  location,
+  isDeleted,
+  category
 
 }
 
 
 
-### DELETE /job/:jobId/job
+### DELETE /job/delete/:jobId
 _Request format__
 {
   jobId
 
 }
 
-- Deletes the job
-
-
-
-
-
-
-
-
-## Testing
-- To test these apis create a new collection in Postman named Project FunctionUp Summer Of code
-- Each api should have a new request in this collection
-- Each request in the collection should be rightly named. Eg Create user, Create job, Get details etc
-
-
-Refer below sample
- ![A Postman collection and request sample](assets/Postman-collection-sample.png)
-
-
-## Response
 
 
 ### Successful Response structure

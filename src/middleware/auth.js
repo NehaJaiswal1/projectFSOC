@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const { isValidObjectId } = require('mongoose')
-const userModel = require('../models/userModel')
+const userModel = require('../model/userModel')
 
 const authentication = (req,res,next)=>{
     try {

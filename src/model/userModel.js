@@ -2,41 +2,48 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    firstName: {
+    name: {
         type: String,
         trim: true,
-        required: [true, 'first name is required'],
-        maxlength: 32,
-    },
-    lastName: {
-        type: String,
-        trim: true,
-        required: [true, 'last name is required'],
-        maxlength: 32,
+        required: true
     },
     email: {
         type: String,
         trim: true,
-        required: [true, 'e-mail is required'],
-        unique: true,
-        match: [
-            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-            'Please add a valid email'
-        ]
+        required: true
     },
     password: {
         type: String,
         trim: true,
-        required: [true, 'password is required'],
-        minlength: [6, 'password must have at least (6) caracters'],
+        required: true
     },
-
-    jobsHistory: [jobsHistorySchema],
+    
+    tags:{
+        type: [String],
+        default: []
+    },
 
     role: {
-        type: Number,
-        default: 0
+        type: String,
+        default: "user",
+        enum: ["job-seeker", "admin", "employer"]
     },
+    
+    isDelete: {
+        type: Boolean,
+        default: false
+    },
+
+    question:{
+        type: String,
+        required: true  
+    },
+
+    answer:{
+        type: String,
+        required: true  
+    }
+
 }, { timestamps: true })
 
 module.exports = mongoose.model("Users", userSchema);

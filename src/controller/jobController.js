@@ -5,6 +5,9 @@ const jobModel = require('../model/jobModel')
 const createjob = async function(req,res){
     try {
     let job = req.body;
+    if(!job){
+        return res.status(400).send({status: false, message: "Please provide job details"})
+    }
     let save = await jobModel.create(job)
     return res.status(200).send({status: true, data: save})
     } catch (error) {
@@ -17,7 +20,7 @@ const createjob = async function(req,res){
 const singlejob = async function(req,res){
     try {
         let id = req.params.jobId
-        const singlejobdata = await jobModel.findById({_id: id})
+        const singlejobdata = await jobModel.findOne({_id: id, isDeleted: false})
         return res.status(200).send({status:true, data: singlejobdata})
     } catch (error) {
         return res.status(400).send({status: false, message: error.message})
@@ -30,7 +33,7 @@ const updateJob = async function(req,res){
         let id = req.params.jobId
         let {title} = req.body
         console.log(title)
-        const finaldata = await jobModel.findByIdAndUpdate({_id: id}, {$set: {title: title}},{new: true})
+        const finaldata = await jobModel.findOneAndUpdate({_id: id, isDeleted: false}, {$set: {title: title}},{new: true})
         return res.status(200).send({status: true, data: finaldata})
     } catch (error) {
         return res.status(400).send({status: false, message: error.message})
