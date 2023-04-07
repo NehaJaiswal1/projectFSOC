@@ -13,11 +13,11 @@ appliedUserId: {
   ref: 'Users'
 },
 
-Status:{
+applystatus:{
   type: String,
-  default: 'Applied',
-  enum: ['In-review', 'Applied', 'Rejected']
-} 
+  enum: ["In-review","Applied", "Rejected"],
+  default: 'Applied'
+}
 
 },{timestamps: true})
 

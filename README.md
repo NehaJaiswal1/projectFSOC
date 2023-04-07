@@ -102,16 +102,19 @@ __Request format__(by query)
 - __Response format__
   - _**On success**_ - Return HTTP status 200 and returns the user document.
   - _**On error**_ - Return a suitable error message with a valid HTTP status code.
+
 ```yaml
 {
     "status": true,
     "message": "all details",
     "data": {}
 }
+
 ```
 ### PUT /admin
 
 __Request format__
+
 ```yaml
 {
   title,salary, description, location

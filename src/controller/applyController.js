@@ -1,28 +1,42 @@
 
-const category = require('../model/jobCategory')
+const { application } = require('express')
+const appliedJob = require('../model/appliedJobs')
+const userModel = require('../model/userModel')
 
-// create category
-const createCategory = async function(req, res){
-    try {
-        let tags = req.body
-        const tagData = await category.create(tags)
-        return res.status(201).send({status: true, data: tagData})
-    } catch (error) {
-        return res.status(400).send({status:false, message: error.message})
+const createApply = async function(req, res){
+    let userId = req.params.userId //userId
+    let jobID = req.body.jobId
+    data = req.body
+    let {appliedUserId, jobId} = data
+    appliedUserId = data.appliedUserId = userId
+    jobId = data.jobId = jobID
+    let create1 = await appliedJob.create(data)
+    let applycandidatedata = await userModel.findById(userId)
+    let obj = {
+        jobPosition: create1,        
+        candidate: applycandidatedata
     }
+    return res.status(200).send({status: true, data: obj}) 
+
 }
 
+const updateResume = async function(req, res){
+    let userId = req.params.userId
+    let jobId = req.body.jobId
+    let appliedUserId = req.body.userId
+    let applystatus = req.body.applystatus
 
-// get all category
-const getAllCategory = async function(req,res){
-    try {
-        
-        const getAllData = await category.find()
-        return res.status(200).send({status:true, data: getAllData})
-    } catch (error) {
-        return res.status(400).send({status: false, message: error.message})
+    let employeeData = await userModel.findById(userId)
+    console.log(employeeData.role)
+    if(employeeData.role != 'employer'){
+        return res.status(403).send({status: false, message: "Access denied"})
     }
+    // let userJob = await jobIdModel.findById()
+    let updateData = await appliedJob.findOneAndUpdate({jobId: jobId, userId: userId},{$set:{applystatus: applystatus}},{new: true})
+    return res.status(200).send({status: true, data : updateData})
 }
 
-
-module.exports = {createCategory, getAllCategory}
+module.exports = {
+    createApply,
+    updateResume
+}
