@@ -4,12 +4,13 @@ const mongoose = require('mongoose')
 const jwt = require("jsonwebtoken")
 const bcrypt = require('bcrypt')
 const validation = require("../validations/validation")
+const aws = require('../middleware/awsLink')
 
 const register = async function (req, res) {
   try {
     let userData = req.body;
 
-    let { name, email, password, tags, role } = userData;
+    let { name, email, password, tags, role, resume } = userData;
 
     if (Object.keys(userData).length == 0)
       return res.status(400).send({ status: false, message: "please provide required fields" });
@@ -96,6 +97,9 @@ const register = async function (req, res) {
         return res.status(400).send({ status: false, message: "email id  already exist" });
 
     }
+    // profileImage = userData.profileImage = req.image
+
+     userData.resume = req.image;
     const userCreated = await userModel.create(userData);
 
     return res.status(201).send({ status: true, message: "User created successfully", data: userCreated });
@@ -147,6 +151,8 @@ const loginUser = async function (req, res) {
 
     if (!isUserExist)
       return res.status(404).send({ status: false, message: "No user found with given Email", });
+
+    
     //Decrypt
     let passwordCompare = await bcrypt.compare(password, isUserExist.password);
 
@@ -194,6 +200,7 @@ const UpdateUser = async function (req, res) {
   try {
     const userId = req.params.userId
     let userData = req.body
+    let resume = req.files
     let { name, email } = userData
 
     if (!mongoose.isValidObjectId(userId)) {
@@ -244,11 +251,12 @@ const UpdateUser = async function (req, res) {
           return res.status(400).send({ status: false, message: "Email is already exists, please send another Email" })
       }
     }
+    resume = userData.resume = req.image
 
 
     const updatedUser = await userModel.findByIdAndUpdate({ _id: userId },
       {
-        $set: { name: name, email: email },
+        $set: { name: name, email: email, resume: resume},
       }, { new: true });
 
     return res.status(200).send({ status: true, message: "User profile updated", data: updatedUser })

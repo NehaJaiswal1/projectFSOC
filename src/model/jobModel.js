@@ -5,36 +5,36 @@ const jobSchema = new mongoose.Schema({
     title: {
         type: String,
         trim: true,
-        // required: true,
+        required: true,
         maxlength: 70,
     },
 
     description: {
         type: String,
         trim: true,
-        // required: true,
+        required: true,
     },
 
     salary: {
         type: String,
         trim: true,
-        // required: true,
+        required: true,
     },
 
     location: {
         type: String,
-        // required: true,
+        required: true,
     },
 
-    
-    tags:{
+
+    tags: {
         type: [String],
         default: []
     }, //skills
 
     companyName: {
         type: String,
-        // required: true
+        required: true
     },
 
     isDeleted: {
@@ -45,7 +45,7 @@ const jobSchema = new mongoose.Schema({
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        // required: true
+        required: true
     },
 
     createdAt: {

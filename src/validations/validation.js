@@ -17,6 +17,10 @@ const validateName = (name) => {
     return /^(?=.*[a-z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,12}$/.test(password);
   };
   
+  // const validatetitle = (title)=>{
+  //   return /^(?=.*[a-z])(?=.*\d)[a-zA-Z\d@$!%*?&]{1,70}$/.test(title);
+  // }
+
   module.exports = {
     validateName,
     validateEmail,
