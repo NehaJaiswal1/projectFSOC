@@ -18,10 +18,10 @@ const userSchema = new mongoose.Schema(
             required: true
         },
 
-        tags: {
-            type: [String],
-            default: []
-        },
+        // tags: {
+        //     type: [String],
+        //     default: []
+        // },
 
         role: {
             type: String,
@@ -31,6 +31,11 @@ const userSchema = new mongoose.Schema(
 
         resume:{
             type: String
+        },
+
+        companyName: {
+            type: String,
+            required: true
         },
 
         isDelete: {

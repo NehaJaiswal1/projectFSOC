@@ -14,7 +14,7 @@ const authentication = (req, res, next) => {
 
         console.log(token[1])
 
-        jwt.verify(token[1], 'project5', function (err, decoded) {
+        jwt.verify(token[1], "projectEPSOFTFSOC", function (err, decoded) {
             if (err) return res.status(401).send({ status: false, message: err.message })
 
             else {

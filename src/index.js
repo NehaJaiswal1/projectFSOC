@@ -8,7 +8,7 @@ const app = express();
 
 app.use(express.json());
 app.use(multer().any());
-
+// app.use(express.limit('5mb'));
 mongoose
   .connect(
     "mongodb+srv://nehajaiswal:neha123@nehadb.pcorgpc.mongodb.net/FSOC",

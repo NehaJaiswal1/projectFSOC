@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const jobModel = require('../model/jobModel')
 const userModel = require('../model/userModel')
+const applyModel = require('../model/appliedJobs')
 
 // create job
 const createjob = async function (req, res) {
@@ -121,6 +122,7 @@ const singlejob = async function (req, res) {
     }
 }
 
+// all jobs applied by job-seekers
 const allJobs = async function (req, res) { // auth, autho
     try {
         let id = req.body.jobId
@@ -136,6 +138,37 @@ const allJobs = async function (req, res) { // auth, autho
         return res.status(400).send({ status: false, message: error.message })
     }
 }
+
+// all jobs by employer
+
+const allJobsEmployer = async function (req, res) {
+    try {
+        let companyName = req.body
+        // let userId = req.params.userId
+        let checkCompany = await jobModel.find(companyName, {isDeleted:false})
+        if (!checkCompany) {
+            return res.status(404).send({ status: false, message: "Company doesn't exist" })
+        }
+        return res.status(200).send({status: true, data: checkCompany})
+
+    } catch (error) {
+        return res.status(400).send({ status: false, message: error.message })
+    }
+}
+
+// all jobs applied by job-seeker
+
+const allJobsSeeker = async function(req,res){
+    try {
+        let jobSeekerId = req.params.userId
+        let dataApplied = await applyModel.find({appliedUserId: jobSeekerId}, {isDeleted:false})
+
+        return res.status(200).send({status: true, data: dataApplied})
+    } catch (error) {
+        return res.status(400).send({ status: false, message: error.message })
+    }
+}
+
 
 // update by id
 const updateJob = async function (req, res) {
@@ -227,4 +260,4 @@ const deleteJob = async function (req, res) {
     }
 }
 
-module.exports = { createjob, singlejob, updateJob, deleteJob, allJobs }
+module.exports = { createjob, singlejob, updateJob, deleteJob, allJobs, allJobsEmployer, allJobsSeeker}

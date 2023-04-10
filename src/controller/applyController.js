@@ -35,7 +35,9 @@ const createApply = async function (req, res) {
 }
 
 const updateResume = async function (req, res) {
-    let userId = req.params.userId
+
+    let userId = req.userId
+    // let userId = req.params.userId
     let jobId = req.body.jobId
     let appliedUserId = req.body.userId
     let applystatus = req.body.applystatus
@@ -46,13 +48,13 @@ const updateResume = async function (req, res) {
     let alreadyApplied = await appliedJob.findById({_id: appliedUserId})
     
     if (alreadyApplied) {
-        if (alreadyApplied.applystatus == 'Applied' || alreadyApplied.applystatus == 'In-review' || alreadyApplied.applystatus == 'Rejected')
+        if (alreadyApplied.applystatus === 'Applied' || alreadyApplied.applystatus === 'In-review' || alreadyApplied.applystatus == 'Rejected')
           return res.status(400).send({ status: false, message: "User  already applied" });
   
     }
 
     let employeeData = await userModel.findById(userId)
-    if (employeeData.role == 'employer') {
+    if (employeeData.role === 'employer') {
         return res.status(403).send({ status: false, message: "Access denied" })
     }
     let updateData = await appliedJob.findOneAndUpdate({ jobId: jobId, userId: userId }, { $set: { applystatus: applystatus } }, { new: true })

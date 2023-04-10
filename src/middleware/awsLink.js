@@ -6,6 +6,8 @@ aws.config.update({
     region: "ap-south-1",
 });
 
+
+
 let uploadFile = async (file) => {
     return new Promise(function (resolve, reject) {
         let s3 = new aws.S3({ apiVersion: "2006-03-01" });
@@ -13,16 +15,33 @@ let uploadFile = async (file) => {
         var uploadParams = {
             ACL: "public-read", //Access Control Locator
             Bucket: "classroom-training-bucket",
+            limits: { fileSize: 5 * 1024 * 1024 },
             Key: "abc/" + file.originalname,
             Body: file.buffer,
         };
 
-        s3.upload(uploadParams, function (err, data) {
+
+        // s3.headObject(params, function (err, data) {
+        //     if (err) {
+        //       console.log(err, err.stack);
+        //     } 
+        //   });
+
+        s3.upload(uploadParams, function (err, resume) {
             if (err) {
                 return reject({ error: err });
             }
+            else {
+                const fileSizeInBytes = resume.ContentLength;
+                console.log(resume.ContentLength)
+                const fileSizeInMB = fileSizeInBytes / (1024 * 1024); // convert to MB
+                if (fileSizeInMB > 5) {
+                  return res.status(400).send({status:false, message: "File size cannot be more than 5 MB"})
+                } 
+              }
             console.log("file uploaded succesfully");
-            return resolve(data.Location);
+            return resolve(resume.Location);
+
         });
     });
 
@@ -33,7 +52,7 @@ const awsLink = async (req, res, next) => {
     try {
         let data = req.body;
         let resume = req.files;
-        console.log(data.role)
+        // console.log(data.role)
         if(!data.role){
             return res.status(400).send({status: false, message: "Please provide role"})
         }
@@ -42,10 +61,11 @@ const awsLink = async (req, res, next) => {
 
             console.log(req.files)
             if (resumeFile) {
+                // console.log("hi")
                 if (Object.keys(resumeFile).length == 0) return res.status(400).send({ status: false, message: "Please upload resumeFile" });
                 let image = await uploadFile(resumeFile[0]);
                 req.image = image;
-                console.log("hello")
+                // console.log("hello")
                 next()
             }
         }
@@ -68,20 +88,27 @@ const awsLink = async (req, res, next) => {
 const awsUpdate = async (req, res, next) => {
     try {
 
-        let profileImage = req.files;
-        if (profileImage) {
-            if (!profileImage || Object.keys(profileImage).length == 0) return next()
+        let data = req.body;
+        let resume = req.files;
+        if(!data.role){
+            return res.status(400).send({status: false, message: "Please provide role"})
+        }
+        if (resume) {
+            if (!resume || Object.keys(resume).length == 0) return next()
 
-            let image = await uploadFile(profileImage[0]);
-            req.image = image;
-            next()
+            let files = await uploadFile(resume[0]);
+            req.files = files;
+            
         }
         else {
             return res.status(400).send({ status: false, message: "Please upload Some data" });
         }
+        next()
     }
     catch (err) { return res.status(500).send({ status: false, error: err.message }) }
 }
 
 
-module.exports = {awsLink,awsUpdate}
+
+
+module.exports = {awsLink, awsUpdate}
