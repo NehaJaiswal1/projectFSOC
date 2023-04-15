@@ -33,4 +33,8 @@ router.get('/job/alljobsapplied/:userId',authentication, authorization, allJobsS
 router.post('/job/:userId', authentication, authorization, createApply)
 router.put('/resumeshortlisting/:userId', authentication, authorization, updateResume)
 
+router.all('*/', function(req, res){
+    return res.status(400).send({status:false, message:"Invalid Path"})
+})
+
 module.exports = router 
