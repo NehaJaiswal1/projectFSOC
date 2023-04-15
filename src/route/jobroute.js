@@ -20,7 +20,7 @@ router.delete('/user/:userId', authentication, authorization, deleteUser);
 
 // jobs
 
-router.post('/job/create', authentication, authorization, createjob);
+router.post('/job/create/:userId', authentication, authorization, createjob);
 router.get('/job/:jobId', singlejob);
 router.put('/job/update/:jobId',authentication, authorization, updateJob);
 router.delete('/job/delete/:jobId',authentication, authorization, deleteJob)

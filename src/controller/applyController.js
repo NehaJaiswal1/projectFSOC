@@ -1,4 +1,4 @@
-
+const mongoose = require('mongoose')
 const appliedJob = require('../model/appliedJobs')
 const userModel = require('../model/userModel')
 

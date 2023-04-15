@@ -12,7 +12,7 @@ const authentication = (req, res, next) => {
 
         token = token.split(" ")
 
-        console.log(token[1])
+        // console.log(token[1])
 
         jwt.verify(token[1], "projectEPSOFTFSOC", function (err, decoded) {
             if (err) return res.status(401).send({ status: false, message: err.message })
