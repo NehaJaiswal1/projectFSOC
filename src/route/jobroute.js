@@ -3,19 +3,19 @@
 const express = require('express');
 const router = express.Router();
 const { createjob, singlejob, updateJob, deleteJob, allJobs, allJobsEmployer, allJobsSeeker } = require("../controller/jobController")
-const { register, loginUser, UpdateUser, getUser, forgetPassword, resetPassword, deleteUser } = require('../controller/userController')
+const { register, loginUser, UpdateUser, getUser, forgetpassword, resetPassword, deleteUser } = require('../controller/userController')
 const { authentication, authorization } = require('../middleware/auth')
 const { createApply, updateResume } = require('../controller/applyController')
 const{awsLink, awsUpdate} = require('../middleware/awsLink')
 
 // user
 
-router.post('/user/register', awsLink, register);
-router.post('/user/login', loginUser);
+router.post('/register', awsLink, register);
+router.post('/login', loginUser);
 router.get('/user/:userId', authentication, getUser);
 router.put('/user/:userId', authentication, authorization,awsUpdate,UpdateUser);
-router.get('/user/password/:userId',authentication, authorization,  forgetPassword);
-router.put('/user/resetPassword/:userId',authentication, authorization, resetPassword);
+router.post('/forgetpassword', forgetpassword);
+router.put('/resetPassword', resetPassword);
 router.delete('/user/:userId', authentication, authorization, deleteUser);
 
 // jobs

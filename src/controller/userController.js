@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt')
 const validation = require("../validations/validation")
 const aws = require('../middleware/awsLink')
 
-const register = async function (req, res) {
+const register = async function (req, res){
   try {
     let userData = req.body;
 
@@ -69,15 +69,6 @@ const register = async function (req, res) {
     let hashing = bcrypt.hashSync(password, 10);
     userData.password = hashing;
 
-    // if (!tags)
-    //   return res.status(400).send({ status: false, message: "tags is mandatory" });
-
-    // if (typeof tags != "string")
-    //   return res.status(400).send({ status: false, message: "please provide tags in string " });
-
-    // tags = userData.tags = tags.trim();
-    // if (tags == "")
-    //   return res.status(400).send({ status: false, message: "Please provide tags value" });
     if (!role)
       return res.status(400).send({ status: false, message: "role is mandatory" });
 
@@ -128,7 +119,7 @@ const register = async function (req, res) {
     userData.resume = req.image;
 
     const userCreated = await userModel.create(userData)
-
+    
     return res.status(201).send({ status: true, message: "User registered successfully", data : userCreated });
   } catch (error) {
     console.log(error.message);
@@ -136,7 +127,7 @@ const register = async function (req, res) {
   }
 };
 
-const loginUser = async function (req, res) {
+const loginUser = async function (req, res){
   try {
     let data = req.body;
     let { email, password } = data;
@@ -191,6 +182,7 @@ const loginUser = async function (req, res) {
     );
 
     let tokenInfo = { userId: isUserExist._id, token: token };
+    console.log(tokenInfo)
 
     res.setHeader('x-api-key', token)
 
@@ -201,7 +193,7 @@ const loginUser = async function (req, res) {
   }
 };
 
-const getUser = async function (req, res) {
+const getUser = async function (req, res){
   try {
     let userId = req.params.userId
 
@@ -223,7 +215,7 @@ const getUser = async function (req, res) {
   }
 }
 
-const UpdateUser = async function (req, res) {
+const UpdateUser = async function (req, res){
   try {
     const userId = req.params.userId
     let userData = req.body
@@ -283,13 +275,13 @@ const UpdateUser = async function (req, res) {
   }
 }
 
-const forgetPassword = async function (req, res) {
-  let userId = req.params.userId;
+const forgetpassword = async function (req, res){
+  
   let userData = req.body;
   let { email } = userData;
   if (Object.keys(userData).length == 0) return res.status(400).send({ status: false, message: "provide valid Information" });
   if (email == undefined) return res.status(400).send({ status: false, message: "Please provide email" })
-  if (!email) return res.status(400).send({ status: false, message: "Please provide email" })
+  if (!email) return res.status(404).send({ status: false, message: "Please provide email" })
   if (validation.validateEmail(email.trim()) == false) return res.status(400).send({ status: false, message: "Please provide valid email" })
 
   const userExist = await userModel.findOne({ email: email });
@@ -304,39 +296,44 @@ const forgetPassword = async function (req, res) {
   return res.status(200).send({ status: false, message: "you can Reset Password" });
 }
 
-const resetPassword = async function (req, res) {
-  let userId = req.params.userId;
-  let userData = req.body;
-  let { email, question, answer, newPassword, confirmPassword } = userData;
-  if (Object.keys(userData).length == 0) return res.status(400).send({ status: false, message: "provide New Password" });
-
-
-  const userExist = await userModel.findOne({ email: email });
-  console.log(userExist.email, email)
-  
-    if (userExist.email != email) {
-
-      return res.status(400).send({status: false, message: "email is not correct"})
-    }
-    console.log(userExist.answer, userExist)
-    let answerCompare = await bcrypt.compare(answer, userExist.answer);
-
-    if (!answerCompare) return res.status(400).send({ status: false, message: "Please enter valid answer" })
+const resetPassword = async function (req, res){
+  try {
+   
+    let userData = req.body;
+    let { email, question, answer, newPassword, confirmPassword } = userData;
+    if (Object.keys(userData).length == 0) return res.status(400).send({ status: false, message: "provide New Password" });
   
   
-  if (newPassword == undefined) return res.status(400).send({ status: false, message: "Please provide New Password" })
-  if (!newPassword) return res.status(400).send({ status: false, message: "Please provide New Password" })
-
-  if (confirmPassword == undefined) return res.status(400).send({ status: false, message: "Please provide Confirm Password" })
-  if (!confirmPassword) return res.status(400).send({ status: false, message: "Please provide Confirm Password" })
-
-  if (newPassword != confirmPassword) return res.status(400).send({ status: false, message: "Both passwords must match" });
-
-  let hashing = bcrypt.hashSync(newPassword, 10);
-  userData.newPassword = hashing;
-
- let save =  await userModel.findByIdAndUpdate({ _id: userId }, { $set: { password: userData.newPassword } }, { new: true });
-  return res.status(200).send({ status: true, message: "password changed successfully", data : save });
+    const userExist = await userModel.findOne({ email: email });
+    // console.log(userExist.email, email)
+    
+      if (userExist.email != email) {
+  
+        return res.status(400).send({status: false, message: "email is not correct"})
+      }
+      // console.log(userExist.answer, userExist)
+      let answerCompare = await bcrypt.compare(answer, userExist.answer);
+  
+      if (!answerCompare) return res.status(400).send({ status: false, message: "Please enter valid answer" })
+    
+    
+    if (newPassword == undefined) return res.status(400).send({ status: false, message: "Please provide New Password" })
+    if (!newPassword) return res.status(400).send({ status: false, message: "Please provide New Password" })
+  
+    if (confirmPassword == undefined) return res.status(400).send({ status: false, message: "Please provide Confirm Password" })
+    if (!confirmPassword) return res.status(400).send({ status: false, message: "Please provide Confirm Password" })
+  
+    if (newPassword != confirmPassword) return res.status(400).send({ status: false, message: "Both passwords must match" });
+  
+    let hashing = bcrypt.hashSync(newPassword, 10);
+    userData.newPassword = hashing;
+  
+   let save =  await userModel.findOneAndUpdate({email: email}, { $set: { password: userData.newPassword } }, { new: true });
+    return res.status(200).send({ status: true, message: "password changed successfully", data : save });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message })
+  }
+ 
 }
 
 const deleteUser = async function (req, res) {
@@ -365,4 +362,4 @@ const deleteUser = async function (req, res) {
 }
 
 
-module.exports = { loginUser, register, getUser, UpdateUser, forgetPassword, resetPassword, deleteUser }
+module.exports = { loginUser, register, getUser, UpdateUser, forgetpassword, resetPassword, deleteUser }
