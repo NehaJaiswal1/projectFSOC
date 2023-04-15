@@ -25,7 +25,7 @@ mongoose
 
 app.use("/", route);
 
-app.listen(port, () => {
+app.listen(port, '127.0.0.1', () => {
   console.log(`App is running on port ${port}`);
 });
 
